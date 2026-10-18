@@ -102,6 +102,10 @@ GitHub release.
    to the `chrome-web-store` environment.
 4. Add the repository variables `CHROME_PUBLISHER_ID` (in the dashboard URL) and `CHROME_EXTENSION_ID`.
 
+## Privacy
+
+The extension collects no data and sends nothing anywhere. See [PRIVACY.md](PRIVACY.md).
+
 ## License
 
 [GPL-3.0](LICENSE)
