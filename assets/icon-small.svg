@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <title>Party Challenges</title>
+  <!-- Party Challenges, simplified for toolbar sizes (16 and 32px): the cards and the target, no dart. -->
+  <g stroke="#fff" stroke-width="1.2" stroke-linejoin="round">
+    <rect x="9" y="3" width="14" height="22" rx="2.5" fill="#12cf81" transform="rotate(-15 16 29)"/>
+    <rect x="9" y="3" width="14" height="22" rx="2.5" fill="#e24e67" transform="rotate(15 16 29)"/>
+    <rect x="8.5" y="3.5" width="15" height="23" rx="2.5" fill="#fc712b"/>
+  </g>
+  <circle cx="16" cy="15" r="5.6" fill="#fff"/>
+  <circle cx="16" cy="15" r="4" fill="#1b1f29"/>
+  <circle cx="16" cy="15" r="2.2" fill="#e24e67"/>
+</svg>

@@ -60,6 +60,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the commit message convention.
 - `src/pages/`: page integrations for `/play`, the lobby and the router
 - `src/components/`: React match panel, styled with the Autodarts design tokens
   (`entrypoints/autodarts.content/style.css`)
+- `assets/`: icon sources. `icon.svg` is rendered to `public/icon/` at 48, 96 and 128 px, `icon-small.svg` at 16 and
+  32 px (e.g. `rsvg-convert -w 128 -h 128 assets/icon.svg -o public/icon/128.png`)
 
 ## CI and releases
 
