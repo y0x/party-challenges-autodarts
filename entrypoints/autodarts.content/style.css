@@ -1,0 +1,402 @@
+/*
+ * Rendered inside the play.autodarts page (no shadow DOM), so every rule is scoped to our
+ * own cc- classes and uses the site's design tokens (fonts, colours) with fallbacks.
+ */
+.cc-root,
+.cc-banner {
+  --cc-tile-bg: var(--color-black-85, #1b1f29);
+  --cc-tile-border: rgb(255 255 255 / 0.06);
+  --cc-control-bg: var(--color-black-70, #292c33);
+  --cc-muted: var(--muted-foreground, #a1a1a1);
+  --cc-accent: var(--color-blue-60, #0b55df);
+  --cc-accent-strong: var(--color-blue-80, #002a77);
+  --cc-good: var(--color-green-50, #12cf81);
+  --cc-bad: var(--color-red-60, #da3954);
+  --cc-party: var(--color-game-party, #e9f81f);
+
+  font-family: var(--font-body, "Manrope Variable", sans-serif);
+  color: var(--foreground, #fafafa);
+}
+
+.cc-root *,
+.cc-root *::before,
+.cc-root *::after {
+  box-sizing: border-box;
+}
+
+.cc-root p,
+.cc-banner p {
+  margin: 0;
+}
+
+.cc-root button {
+  font: inherit;
+  color: inherit;
+}
+
+/* Lobby banner */
+.cc-banner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+  padding: 16px;
+  border: 1px solid var(--cc-tile-border);
+  border-left: 4px solid var(--cc-party);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--cc-party) 10%, transparent), transparent 60%), var(--cc-tile-bg);
+}
+
+.cc-banner-title {
+  font-family: var(--font-display, "Bebas Neue", sans-serif);
+  font-size: 24px;
+  line-height: 1.2;
+}
+
+.cc-banner-text {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--cc-muted);
+}
+
+.cc-banner-text strong {
+  color: var(--foreground, #fafafa);
+}
+
+/* Match panel */
+.cc-panel {
+  position: fixed;
+  z-index: 60;
+  top: 76px;
+  right: 16px;
+  width: min(360px, calc(100vw - 32px));
+  max-height: calc(100vh - 92px);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--cc-tile-border);
+  border-radius: 12px;
+  background: var(--cc-tile-bg);
+  box-shadow: 0 12px 40px rgb(0 0 0 / 0.5);
+  overflow: hidden;
+}
+
+@media (max-width: 640px) {
+  .cc-panel {
+    top: auto;
+    bottom: 16px;
+    max-height: 70vh;
+  }
+}
+
+.cc-root .cc-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 8px 8px 16px;
+  border-bottom: 1px solid var(--cc-tile-border);
+}
+
+.cc-panel-collapsed .cc-panel-header {
+  border-bottom: 0;
+}
+
+.cc-root .cc-panel-toggle {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cc-root .cc-panel-title {
+  font-family: var(--font-display, "Bebas Neue", sans-serif);
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.cc-root .cc-panel-body {
+  overflow-y: auto;
+  padding: 16px;
+}
+
+/* Typography */
+.cc-root .cc-h2 {
+  font-family: var(--font-display, "Bebas Neue", sans-serif);
+  font-size: 26px;
+  font-weight: 400;
+  line-height: 1.15;
+}
+
+.cc-root .cc-muted {
+  color: var(--cc-muted);
+}
+
+.cc-root .cc-small {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+/* Tiles, pills, buttons — same look as the Autodarts game mode tiles */
+.cc-root .cc-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 12px;
+  border: 1px solid var(--cc-tile-border);
+  border-radius: 12px;
+  background: var(--cc-control-bg);
+  text-align: left;
+}
+
+.cc-root button.cc-tile {
+  cursor: pointer;
+}
+
+.cc-root button.cc-tile:hover:not(:disabled) {
+  background-image: linear-gradient(rgb(255 255 255 / 0.05), rgb(255 255 255 / 0.05));
+}
+
+.cc-root button.cc-tile:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.cc-root .cc-tile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cc-root .cc-tile-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.cc-root .cc-pill {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  height: 25px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  background: rgb(255 255 255 / 0.08);
+}
+
+.cc-root .cc-pill-level {
+  color: var(--cc-level);
+  background: color-mix(in oklab, var(--cc-level) 20%, transparent);
+}
+
+.cc-root .cc-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.cc-root .cc-btn {
+  height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--cc-tile-border);
+  border-radius: 8px;
+  background: var(--cc-control-bg);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cc-root .cc-btn:hover {
+  background-image: linear-gradient(rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.06));
+}
+
+.cc-root .cc-icon {
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--cc-muted);
+  cursor: pointer;
+}
+
+.cc-root .cc-icon:hover {
+  background: rgb(255 255 255 / 0.06);
+  color: var(--foreground, #fafafa);
+}
+
+.cc-root .cc-notice {
+  padding: 10px 12px;
+  border-radius: 8px;
+  color: var(--cc-party);
+  background: color-mix(in oklab, var(--cc-party) 12%, transparent);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Game */
+.cc-root .cc-game {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.cc-root .cc-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cc-root .cc-scores li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: var(--cc-control-bg);
+}
+
+.cc-root .cc-scores li.cc-active {
+  border-color: var(--cc-accent);
+  background: color-mix(in oklab, var(--cc-accent-strong) 60%, var(--cc-tile-bg));
+}
+
+.cc-root .cc-scores li.cc-winner {
+  border-color: var(--cc-party);
+}
+
+.cc-root .cc-score-name {
+  font-weight: 700;
+}
+
+.cc-root .cc-score {
+  font-family: var(--font-number, sans-serif);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.cc-root .cc-levels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cc-root .cc-level {
+  border-top: 3px solid var(--cc-level);
+}
+
+.cc-root .cc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--cc-tile-border);
+  border-left: 4px solid var(--cc-level);
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, color-mix(in oklab, var(--cc-level) 18%, transparent), transparent 70%),
+    var(--cc-control-bg);
+}
+
+.cc-root .cc-card-text {
+  font-family: var(--font-display, "Bebas Neue", sans-serif);
+  font-size: 34px;
+  line-height: 1.05;
+}
+
+.cc-root .cc-darts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.cc-root .cc-dart {
+  padding: 10px 0;
+  border: 1px solid var(--cc-tile-border);
+  border-radius: 10px;
+  background: var(--cc-control-bg);
+  text-align: center;
+  font-family: var(--font-number, sans-serif);
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.cc-root .cc-dart-empty {
+  color: var(--cc-muted);
+}
+
+.cc-root .cc-result {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.cc-root .cc-result-solved {
+  color: var(--cc-good);
+  background: color-mix(in oklab, var(--cc-good) 15%, transparent);
+}
+
+.cc-root .cc-result-failed {
+  color: var(--cc-bad);
+  background: color-mix(in oklab, var(--cc-bad) 15%, transparent);
+}
+
+.cc-root .cc-summary {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 4px;
+  font-size: 14px;
+}
+
+.cc-root .cc-summary th,
+.cc-root .cc-summary td {
+  padding: 6px 8px;
+  text-align: center;
+  font-weight: 400;
+}
+
+.cc-root .cc-summary thead th .cc-pill {
+  align-self: center;
+}
+
+.cc-root .cc-summary tbody th {
+  text-align: left;
+  font-weight: 700;
+  border-radius: 8px 0 0 8px;
+}
+
+.cc-root .cc-summary tbody th,
+.cc-root .cc-summary tbody td {
+  background: var(--cc-control-bg);
+}
+
+.cc-root .cc-summary tbody td:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.cc-root .cc-summary tfoot td {
+  padding-top: 0;
+  text-align: right;
+}
+
+.cc-root .cc-summary-solved {
+  font-family: var(--font-number, sans-serif);
+  font-size: 20px;
+  font-weight: 700;
+}

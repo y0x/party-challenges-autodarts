@@ -1,0 +1,61 @@
+name: Publish
+
+# Submits the package of a GitHub release to the Chrome Web Store. Only started by hand.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release to publish, without the leading "v" (e.g. 1.2.0).
+        type: string
+        required: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish-chrome-web-store
+  cancel-in-progress: false
+
+jobs:
+  chrome:
+    name: Chrome Web Store
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: chrome-web-store
+      url: https://chromewebstore.google.com/detail/${{ vars.CHROME_EXTENSION_ID }}
+    steps:
+      - name: Check configuration
+        if: vars.CHROME_EXTENSION_ID == ''
+        run: |
+          echo "::error::Set up the Chrome Web Store first (README → One-time store setup)."
+          exit 1
+
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Only the submit tool runs in this job, which holds the store credentials.
+      - name: Setup
+        uses: ./.github/actions/setup
+        with:
+          ignore-scripts: "true"
+          cache: ""
+
+      - name: Download release package
+        run: gh release download "v$VERSION" --pattern '*-chrome.zip' --dir .output
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ inputs.version }}
+
+      - name: Submit for review
+        run: pnpm exec publish-extension --chrome-zip .output/*-chrome.zip
+        env:
+          CHROME_API_VERSION: v2
+          # A new submission replaces a version that is still in review.
+          CHROME_CANCEL_PENDING: "true"
+          CHROME_EXTENSION_ID: ${{ vars.CHROME_EXTENSION_ID }}
+          CHROME_PUBLISHER_ID: ${{ vars.CHROME_PUBLISHER_ID }}
+          CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL: ${{ secrets.CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL }}
+          CHROME_SERVICE_ACCOUNT_PRIVATE_KEY: ${{ secrets.CHROME_SERVICE_ACCOUNT_PRIVATE_KEY }}

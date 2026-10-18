@@ -1,0 +1,56 @@
+{
+  "name": "party-challenges-autodarts",
+  "description": "Party Challenges: a challenge card party game for Autodarts boards",
+  "private": true,
+  "version": "0.0.0-development",
+  "license": "GPL-3.0-only",
+  "author": "y0x",
+  "homepage": "https://github.com/y0x/party-challenges-autodarts#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/y0x/party-challenges-autodarts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/y0x/party-challenges-autodarts/issues"
+  },
+  "type": "module",
+  "packageManager": "pnpm@12.14.0+sha512.c18ba6d87993d3d164cb5e8948f32b2c06ee854487e06cd8d86781342fb3e5bb4634367034711e86802baa9c37bea906ce1929ad08d70884c97d801df13389a6",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "prepare": "husky",
+    "postinstall": "wxt prepare"
+  },
+  "dependencies": {
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.5.15",
+    "@commitlint/cli": "^21.2.3",
+    "@commitlint/config-conventional": "^21.2.3",
+    "@semantic-release/exec": "^7.1.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@wxt-dev/module-react": "^1.2.2",
+    "conventional-changelog-conventionalcommits": "^9.3.1",
+    "husky": "^9.1.7",
+    "publish-browser-extension": "^6.2.0",
+    "semantic-release": "^25.0.9",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5",
+    "web-ext": "^10.8.0",
+    "wxt": "^0.21.4"
+  }
+}

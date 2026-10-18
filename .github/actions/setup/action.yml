@@ -1,0 +1,33 @@
+name: Setup
+description: Install pnpm, Node.js and the project dependencies.
+
+inputs:
+  ignore-scripts:
+    description: Skip lifecycle scripts while installing, for jobs that only run a single tool.
+    default: "false"
+  cache:
+    description: Package manager whose store setup-node caches; empty to not use a cache (release and publish jobs).
+    default: pnpm
+
+runs:
+  using: composite
+  steps:
+    - name: Install pnpm
+      uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+
+    - name: Install Node.js
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version-file: .nvmrc
+        cache: ${{ inputs.cache }}
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        if [ "$IGNORE_SCRIPTS" = "true" ]; then
+          pnpm install --frozen-lockfile --ignore-scripts
+        else
+          pnpm install --frozen-lockfile
+        fi
+      env:
+        IGNORE_SCRIPTS: ${{ inputs.ignore-scripts }}

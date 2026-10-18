@@ -1,0 +1,5 @@
+rules:
+  # The `$/` self-repository syntax isn't supported by actionlint 1.7.12 yet. Switch the
+  # `./` references to it and remove this once actionlint understands it.
+  self-repository:
+    disable: true
