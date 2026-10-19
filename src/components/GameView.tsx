@@ -1,17 +1,18 @@
-import { getCard, LEVEL_INFO, LEVELS } from '../engine/cards';
+import { getCard, LEVEL_COLORS, LEVELS } from '../engine/cards';
 import { DARTS_PER_TURN, dartLabel } from '../engine/darts';
 import { type GameAction, type GameState, levelStats } from '../engine/game';
+import { type Locale, type Messages, messages } from '../i18n';
 
 interface Props {
   game: GameState;
   dispatch: (action: GameAction) => void;
   /** Darts already thrown in the current Autodarts turn. */
   turnDarts: number;
+  locale: Locale;
 }
 
-const points = (n: number) => `${n} pt${n === 1 ? '' : 's'}`;
-
-export function GameView({ game, dispatch, turnDarts }: Props) {
+export function GameView({ game, dispatch, turnDarts, locale }: Props) {
+  const m = messages(locale);
   const active = game.players[game.active]!;
   const previous = game.players[(game.active - 1 + game.players.length) % game.players.length]!;
   const card = game.card ? getCard(game.card.id) : null;
@@ -35,34 +36,34 @@ export function GameView({ game, dispatch, turnDarts }: Props) {
         ))}
       </ul>
       {game.settings.targetScore > 0 && (
-        <p className="cc-muted cc-small">First to {points(game.settings.targetScore)} wins</p>
+        <p className="cc-muted cc-small">{m.firstTo(m.points(game.settings.targetScore))}</p>
       )}
 
       {game.phase === 'finished' && (
         <div className="cc-result cc-result-solved">
-          <p className="cc-h2">🏆 {winners.map((p) => p.name).join(' & ')} wins!</p>
-          <p className="cc-small">Start a new game from Party → Party Challenges.</p>
+          <p className="cc-h2">{m.wins(winners.map((p) => p.name))}</p>
+          <p className="cc-small">{m.newGame}</p>
         </div>
       )}
-      {game.phase === 'finished' && <LevelSummary game={game} />}
+      {game.phase === 'finished' && <LevelSummary game={game} m={m} />}
 
       {game.phase === 'pickLevel' && (
         <>
-          <p className="cc-h2">{active.name}, pick a level</p>
-          {turnDarts > 0 && <p className="cc-notice">Darts thrown before picking a card don't count.</p>}
+          <p className="cc-h2">{m.pickLevel(active.name)}</p>
+          {turnDarts > 0 && <p className="cc-notice">{m.dartsBeforeCard}</p>}
           <div className="cc-levels">
             {LEVELS.map((level) => (
               <button
                 type="button"
                 key={level}
                 className="cc-tile cc-level"
-                style={{ ['--cc-level' as string]: LEVEL_INFO[level].color }}
+                style={{ ['--cc-level' as string]: LEVEL_COLORS[level] }}
                 disabled={game.decks[level].length === 0}
                 onClick={() => dispatch({ type: 'pickLevel', level })}
               >
-                <span className="cc-tile-title">{LEVEL_INFO[level].name}</span>
-                <span className="cc-pill cc-pill-level">{points(level)}</span>
-                <span className="cc-muted cc-small">{game.decks[level].length} left</span>
+                <span className="cc-tile-title">{m.levels[level]}</span>
+                <span className="cc-pill cc-pill-level">{m.points(level)}</span>
+                <span className="cc-muted cc-small">{m.cardsLeft(game.decks[level].length)}</span>
               </button>
             ))}
           </div>
@@ -71,21 +72,19 @@ export function GameView({ game, dispatch, turnDarts }: Props) {
 
       {inTurn && card && (
         <>
-          <div className="cc-card" style={{ ['--cc-level' as string]: LEVEL_INFO[card.level].color }}>
+          <div className="cc-card" style={{ ['--cc-level' as string]: LEVEL_COLORS[card.level] }}>
             <div className="cc-tile-header">
               <span className="cc-pill cc-pill-level">
-                {LEVEL_INFO[card.level].name} · {points(card.level)}
+                {m.levels[card.level]} · {m.points(card.level)}
               </span>
-              {game.failsOnCard > 0 && <span className="cc-muted cc-small">Attempt {game.failsOnCard + 1}</span>}
+              {game.failsOnCard > 0 && <span className="cc-muted cc-small">{m.attempt(game.failsOnCard + 1)}</span>}
             </div>
-            <p className="cc-card-text">{card.text}</p>
+            <p className="cc-card-text">{card.text[locale]}</p>
           </div>
 
           <p className="cc-h2">{active.name}</p>
           {game.failsOnCard > 0 && game.outcome === null && game.darts.length === 0 && (
-            <p className="cc-notice">
-              {previous.name} missed this card — {active.name} can steal it now.
-            </p>
+            <p className="cc-notice">{m.steal(previous.name, active.name)}</p>
           )}
           <div className="cc-darts">
             {Array.from({ length: DARTS_PER_TURN }, (_, i) => {
@@ -101,17 +100,13 @@ export function GameView({ game, dispatch, turnDarts }: Props) {
 
           {game.outcome === 'solved' && (
             <div className="cc-result cc-result-solved">
-              <p className="cc-h2">Solved! +{points(card.level)}</p>
+              <p className="cc-h2">{m.solved(m.points(card.level))}</p>
             </div>
           )}
           {game.outcome === 'failed' && (
             <div className="cc-result cc-result-failed">
-              <p className="cc-h2">Not this time</p>
-              <p className="cc-small">
-                {game.players.length > 1
-                  ? 'Pull the darts out: the next player tries this card.'
-                  : 'Pull the darts out for a new card.'}
-              </p>
+              <p className="cc-h2">{m.failed}</p>
+              <p className="cc-small">{game.players.length > 1 ? m.nextPlayer : m.newCard}</p>
             </div>
           )}
 
@@ -121,9 +116,9 @@ export function GameView({ game, dispatch, turnDarts }: Props) {
                 type="button"
                 className="cc-btn"
                 onClick={() => dispatch({ type: 'skipCard' })}
-                title="Put this card aside and pick a new one"
+                title={m.skipCardHint}
               >
-                Skip card
+                {m.skipCard}
               </button>
             )}
           </div>
@@ -134,7 +129,7 @@ export function GameView({ game, dispatch, turnDarts }: Props) {
 }
 
 /** Cards solved per level by each player, shown once the game is over. */
-function LevelSummary({ game }: { game: GameState }) {
+function LevelSummary({ game, m }: { game: GameState; m: Messages }) {
   const stats = levelStats(game);
   return (
     <table className="cc-summary">
@@ -142,11 +137,11 @@ function LevelSummary({ game }: { game: GameState }) {
         <tr>
           <th />
           {LEVELS.map((level) => (
-            <th key={level} style={{ ['--cc-level' as string]: LEVEL_INFO[level].color }}>
-              <span className="cc-pill cc-pill-level">{LEVEL_INFO[level].name}</span>
+            <th key={level} style={{ ['--cc-level' as string]: LEVEL_COLORS[level] }}>
+              <span className="cc-pill cc-pill-level">{m.levels[level]}</span>
             </th>
           ))}
-          <th className="cc-muted cc-small">Total</th>
+          <th className="cc-muted cc-small">{m.summaryTotal}</th>
         </tr>
       </thead>
       <tbody>
@@ -158,7 +153,7 @@ function LevelSummary({ game }: { game: GameState }) {
             <tr key={p.id}>
               <th className="cc-score-name">{p.name}</th>
               {LEVELS.map((level) => (
-                <td key={level} title={`${levels[level].solved} of ${levels[level].attempts} attempts solved`}>
+                <td key={level} title={m.summaryCell(levels[level].solved, levels[level].attempts)}>
                   <span className="cc-summary-solved">{levels[level].solved}</span>
                   <span className="cc-muted cc-small">/{levels[level].attempts}</span>
                 </td>
@@ -174,7 +169,7 @@ function LevelSummary({ game }: { game: GameState }) {
       <tfoot>
         <tr>
           <td colSpan={LEVELS.length + 2} className="cc-muted cc-small">
-            Cards solved / attempted
+            {m.summaryLegend}
           </td>
         </tr>
       </tfoot>

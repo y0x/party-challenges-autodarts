@@ -1,16 +1,24 @@
 import { storage } from '#imports';
 import { DEFAULT_GAME_SETTINGS, type GameSettings, type Session } from './engine/game';
+import type { Language } from './i18n';
 
 export interface Settings extends GameSettings {
   /** Log Autodarts WebSocket and match API messages to the console. */
   debug: boolean;
+  /** Language of the cards and the interface. */
+  language: Language;
 }
 
-export const DEFAULT_SETTINGS: Settings = { ...DEFAULT_GAME_SETTINGS, debug: false };
+export const DEFAULT_SETTINGS: Settings = { ...DEFAULT_GAME_SETTINGS, debug: false, language: 'auto' };
 
 export const settingsItem = storage.defineItem<Settings>('sync:settings-v2', {
   fallback: DEFAULT_SETTINGS,
 });
+
+/** Stored settings, with defaults for fields added after they were saved. */
+export async function loadSettings(): Promise<Settings> {
+  return { ...DEFAULT_SETTINGS, ...(await settingsItem.getValue()) };
+}
 
 /** Lobbies created through the Party Challenges tile, by id → creation time. */
 export const challengeLobbiesItem = storage.defineItem<Record<string, number>>('local:challenge-lobbies', {

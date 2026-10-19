@@ -1,3 +1,4 @@
+import type { Messages } from '../i18n';
 import { watchDom } from './router';
 
 /**
@@ -54,7 +55,7 @@ function findCarrierTile(): HTMLButtonElement | null {
   return null;
 }
 
-function createTile(pill: HTMLElement | null, onClick: () => void): HTMLElement {
+function createTile(pill: HTMLElement | null, m: Messages, onClick: () => void): HTMLElement {
   const tile = document.createElement('button');
   tile.type = 'button';
   tile.className = TILE_CLASS;
@@ -81,7 +82,7 @@ function createTile(pill: HTMLElement | null, onClick: () => void): HTMLElement 
 
   const description = document.createElement('p');
   description.className = 'text-[13px] font-medium leading-[1.2] text-muted-foreground';
-  description.textContent = 'Draw a challenge card and beat it before your friends do.';
+  description.textContent = m.tileDescription;
 
   tile.append(header, description);
   tile.addEventListener('click', (event) => {
@@ -96,11 +97,11 @@ function createTile(pill: HTMLElement | null, onClick: () => void): HTMLElement 
  * Keeps our tile in the Party section while on `/play`. `onStart` is called right before
  * the Count Up lobby is created, so the caller can tag the lobby that opens next.
  */
-export function watchPlayTile(onStart: () => void): () => void {
+export function watchPlayTile(m: Messages, onStart: () => void): () => void {
   const start = () => {
     const carrier = findCarrierTile();
     if (!carrier || carrier.disabled) {
-      alert('Party Challenges needs the "Count Up" game mode, but it is not available on this page.');
+      alert(m.carrierMissing);
       return;
     }
     onStart();
@@ -110,7 +111,7 @@ export function watchPlayTile(onStart: () => void): () => void {
   return watchDom(() => {
     const section = findPartySection();
     if (section && !section.grid.querySelector(`[${TILE_ATTR}]`)) {
-      section.grid.append(createTile(section.pill, start));
+      section.grid.append(createTile(section.pill, m, start));
     }
   });
 }

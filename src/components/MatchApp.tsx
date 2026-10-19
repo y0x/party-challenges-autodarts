@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { browser } from '#imports';
 import { applyAction, createSession, type GameAction, type MatchSnapshot, type Session } from '../engine/game';
+import { messages } from '../i18n';
 import type { MatchFeed } from '../matchFeed';
-import { type Settings, saveSession, sessionsItem, settingsItem } from '../settings';
+import { loadSettings, type Settings, saveSession, sessionsItem } from '../settings';
 import { GameView } from './GameView';
+import { useLocale } from './useLocale';
 
 const COLLAPSED_KEY = 'party-challenges-collapsed';
 
@@ -18,6 +20,8 @@ function readCollapsed() {
 /** The card game panel on a match page. */
 export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }) {
   const { session, match, dispatch } = useMatchSession(matchId, feed);
+  const locale = useLocale();
+  const m = messages(locale);
   const [collapsed, setCollapsedState] = useState(readCollapsed);
   const setCollapsed = (value: boolean) => {
     setCollapsedState(value);
@@ -37,7 +41,7 @@ export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }
           type="button"
           className="cc-panel-toggle"
           onClick={() => setCollapsed(!collapsed)}
-          title={collapsed ? 'Show' : 'Hide'}
+          title={collapsed ? m.show : m.hide}
         >
           <span className="cc-panel-title">🎯 Party Challenges</span>
           {collapsed && active && <span className="cc-muted cc-small">{active.name}</span>}
@@ -45,7 +49,7 @@ export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }
         <button
           type="button"
           className="cc-icon"
-          title="Settings"
+          title={m.settings}
           onClick={() => void browser.runtime.sendMessage({ type: 'openOptions' })}
         >
           ⚙
@@ -53,7 +57,7 @@ export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }
         <button
           type="button"
           className="cc-icon"
-          title={collapsed ? 'Show' : 'Hide'}
+          title={collapsed ? m.show : m.hide}
           onClick={() => setCollapsed(!collapsed)}
         >
           {collapsed ? '▴' : '▾'}
@@ -62,14 +66,16 @@ export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }
       {!collapsed && (
         <div className="cc-panel-body">
           {matchId.startsWith('local-') ? (
-            <p className="cc-notice">
-              This match is scored manually. Party Challenges needs your Autodarts board: select it for the players in
-              the lobby.
-            </p>
+            <p className="cc-notice">{m.manualMatch}</p>
           ) : session ? (
-            <GameView game={session.game} dispatch={dispatch} turnDarts={match?.turn?.darts.length ?? 0} />
+            <GameView
+              game={session.game}
+              dispatch={dispatch}
+              turnDarts={match?.turn?.darts.length ?? 0}
+              locale={locale}
+            />
           ) : (
-            <p className="cc-muted">Connecting to the match…</p>
+            <p className="cc-muted">{m.connecting}</p>
           )}
         </div>
       )}
@@ -104,7 +110,7 @@ function useMatchSession(matchId: string, feed: MatchFeed) {
 
   useEffect(() => {
     const unsubscribe = feed.subscribe(onMatch);
-    void Promise.all([sessionsItem.getValue(), settingsItem.getValue()]).then(([sessions, rules]) => {
+    void Promise.all([sessionsItem.getValue(), loadSettings()]).then(([sessions, rules]) => {
       ref.current = sessions[matchId] ?? null;
       setSession(ref.current);
       settings.current = rules;

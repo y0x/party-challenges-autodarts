@@ -17,7 +17,7 @@ data to check the darts against the challenge cards and to keep score.
 
 Everything is stored in your browser only:
 
-- **Settings** (points to win, discarding cards, logging) are stored with `chrome.storage.sync`. If you use Chrome
+- **Settings** (language, points to win, discarding cards, logging) are stored with `chrome.storage.sync`. If you use Chrome
   sync, Chrome syncs them between your own devices through your Google account.
 - **Game state** (players, scores and played cards of each match) and the ids of the lobbies and matches started
   through the extension are stored with `chrome.storage.local`. Entries older than 7 days are deleted

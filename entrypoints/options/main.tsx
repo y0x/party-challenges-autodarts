@@ -1,28 +1,52 @@
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
-import { DEFAULT_SETTINGS, type Settings, settingsItem } from '@/src/settings';
+import { type Language, LOCALE_NAMES, LOCALES, messages, resolveLocale } from '@/src/i18n';
+import { DEFAULT_SETTINGS, loadSettings, type Settings, settingsItem } from '@/src/settings';
 import './style.css';
 
 function Options() {
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
-  const [message, setMessage] = useState('');
+  const [saved, setSaved] = useState(false);
+  const locale = resolveLocale(settings.language);
+  const m = messages(locale);
 
   useEffect(() => {
-    void settingsItem.getValue().then(setSettings);
+    void loadSettings().then(setSettings);
   }, []);
+
+  useEffect(() => {
+    document.documentElement.lang = locale;
+    document.title = m.optionsTitle;
+  }, [locale, m]);
 
   const save = async () => {
     await settingsItem.setValue(settings);
-    setMessage('Saved. Rule changes apply to the next game.');
+    setSaved(true);
   };
 
   return (
     <main>
-      <h1>🎯 Party Challenges – Settings</h1>
+      <h1>🎯 {m.optionsTitle}</h1>
 
-      <h2>Rules</h2>
+      <h2>{m.general}</h2>
       <label>
-        <span>Points to win</span>
+        <span>{m.language}</span>
+        <select
+          value={settings.language}
+          onChange={(e) => setSettings({ ...settings, language: e.target.value as Language })}
+        >
+          <option value="auto">{m.languageAuto}</option>
+          {LOCALES.map((l) => (
+            <option key={l} value={l}>
+              {LOCALE_NAMES[l]}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <h2>{m.rules}</h2>
+      <label>
+        <span>{m.targetScore}</span>
         <input
           type="number"
           min={0}
@@ -30,32 +54,32 @@ function Options() {
           onChange={(e) => setSettings({ ...settings, targetScore: Math.max(0, Number(e.target.value) || 0) })}
         />
       </label>
-      <p className="hint">0 = no target; the game ends with the Autodarts leg (its number of rounds).</p>
+      <p className="hint">{m.targetScoreHint}</p>
       <label>
         <input
           type="checkbox"
           checked={settings.discardAfterFullRound}
           onChange={(e) => setSettings({ ...settings, discardAfterFullRound: e.target.checked })}
         />
-        <span>Discard a card when every player failed it</span>
+        <span>{m.discardAfterFullRound}</span>
       </label>
 
-      <h2>Troubleshooting</h2>
+      <h2>{m.troubleshooting}</h2>
       <label>
         <input
           type="checkbox"
           checked={settings.debug}
           onChange={(e) => setSettings({ ...settings, debug: e.target.checked })}
         />
-        <span>Log Autodarts match messages to the browser console</span>
+        <span>{m.debug}</span>
       </label>
 
       <p>
         <button type="button" onClick={() => void save()}>
-          Save
+          {m.save}
         </button>
       </p>
-      {message && <p className="message">{message}</p>}
+      {saved && <p className="message">{m.saved}</p>}
     </main>
   );
 }
