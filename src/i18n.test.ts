@@ -20,6 +20,17 @@ describe('resolveLocale', () => {
   });
 });
 
-it('every card has a text in every language', () => {
-  for (const card of CARDS) for (const locale of LOCALES) expect(card.text[locale], card.id).toBeTruthy();
+describe('cards', () => {
+  // The Card type already requires a text per language; this also catches empty or untranslated ones.
+  it('have a text in every language', () => {
+    for (const card of CARDS) for (const locale of LOCALES) expect(card.text[locale]?.trim(), card.id).toBeTruthy();
+  });
+
+  it('are translated, not copied from English', () => {
+    for (const card of CARDS) {
+      for (const locale of LOCALES.filter((l) => l !== 'en')) {
+        expect(card.text[locale], `${card.id} (${locale})`).not.toBe(card.text.en);
+      }
+    }
+  });
 });
