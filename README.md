@@ -12,6 +12,10 @@ The first player to reach the target score (10 points by default) wins. Without 
 the Autodarts leg. The winner screen shows how many cards of each level every player solved, and the next leg starts
 a new game.
 
+The cards and the interface are available in English and German. The language follows the browser (English for
+any other language) and can be changed in the extension settings. The extension's name and description in the
+browser and the store are translated too.
+
 ## How it fits into Autodarts
 
 1. **`/play`**: a **Party Challenges** tile appears in the *Party* section. Clicking it clicks the *Count Up* tile,
@@ -54,8 +58,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the commit message convention.
 
 - `src/engine/`: pure game logic
   - `rules.ts`: challenge rules
-  - `cards.ts`: the deck; edit it to add your own cards
+  - `cards.ts`: the deck, with each card's text in every language; edit it to add your own cards
   - `game.ts`: card game driven by match snapshots, including following Autodarts' undo
+- `src/i18n.ts`: interface texts and the language choice
 - `src/throws/`: parser for Autodarts match state
 - `src/pages/`: page integrations for `/play`, the lobby and the router
 - `src/components/`: React match panel, styled with the Autodarts design tokens
@@ -95,12 +100,29 @@ The first version has to be uploaded by hand so the store creates the listing. T
 GitHub release.
 
 1. Upload `*-chrome.zip` in the [developer dashboard](https://chrome.google.com/webstore/devconsole), fill in the
-   listing and submit it.
+   listing and submit it. The name and summary come from `public/_locales/`; paste the detailed description for
+   each language from `store/description.<lang>.txt`.
 2. Create a Google Cloud service account with a JSON key and add its email under *Account → Service accounts* in the
    developer dashboard.
 3. Add the secrets `CHROME_SERVICE_ACCOUNT_CLIENT_EMAIL` and `CHROME_SERVICE_ACCOUNT_PRIVATE_KEY` (from the JSON key)
    to the `chrome-web-store` environment.
 4. Add the repository variables `CHROME_PUBLISHER_ID` (in the dashboard URL) and `CHROME_EXTENSION_ID`.
+
+## Contributing
+
+Contributions are welcome:
+
+- **Bugs:** open an [issue](https://github.com/y0x/party-challenges-autodarts/issues) with the bug report template.
+  Turn on *Log Autodarts match messages* in the settings and add the console output if the game doesn't follow
+  the match.
+- **New cards:** add them to `src/engine/cards.ts` with a text in every language and a rule from
+  `src/engine/rules.ts`. Rules are covered by `src/engine/rules.test.ts`.
+- **Translations:** add the language to `src/i18n.ts` (texts and `LOCALES`), every card in `src/engine/cards.ts`,
+  `public/_locales/` and `store/`.
+- **Security issues:** report them privately as described in [SECURITY.md](SECURITY.md), not in a public issue.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the setup, the checks and the commit message convention, and open a pull
+request against `main`.
 
 ## Privacy
 

@@ -1,0 +1,19 @@
+Party Challenges macht dein Autodarts-Board zu einem Partyspiel mit Challenge-Karten, direkt in play.autodarts.com.
+
+So funktioniert's
+• In jedem Zug wählt der Spieler eine Stufe: Leicht (1 Punkt), Mittel (2 Punkte) oder Schwer (3 Punkte).
+• Er zieht eine Challenge-Karte wie „Wirf 100 oder mehr Punkte“ oder „Checke 40 aus“ und wirft seinen Zug.
+• Wer die Karte schafft, bekommt ihre Punkte. Wer sie verfehlt, gibt sie an den nächsten Spieler weiter, bis sie jemand schafft.
+• Wer zuerst die Zielpunktzahl erreicht, gewinnt (standardmäßig 10 Punkte).
+
+Dein Autodarts-Board erkennt jeden Dart, die Karten werden also automatisch geprüft, auch bei Korrekturen und Rückgängig.
+
+Los geht's
+Öffne Spielen → Party → Party Challenges, füge die Spieler hinzu, wähle dein Board aus und starte das Spiel.
+
+• 60 Challenge-Karten in drei Stufen
+• Deutsch und Englisch (folgt deinem Browser, in den Einstellungen änderbar)
+• Einstellbare Zielpunktzahl
+• Sammelt keine Daten und sendet nichts
+
+Diese Erweiterung steht in keiner Verbindung zu Autodarts.

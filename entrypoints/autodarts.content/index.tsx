@@ -1,10 +1,11 @@
 import ReactDOM from 'react-dom/client';
 import { MatchApp } from '@/src/components/MatchApp';
+import { messages, resolveLocale } from '@/src/i18n';
 import { MatchFeed } from '@/src/matchFeed';
 import { showLobbyBanner } from '@/src/pages/lobby';
 import { watchPlayTile } from '@/src/pages/play';
 import { type Route, watchRoute } from '@/src/pages/router';
-import { challengeLobbiesItem, challengeMatchesItem, remember, settingsItem } from '@/src/settings';
+import { challengeLobbiesItem, challengeMatchesItem, loadSettings, remember, settingsItem } from '@/src/settings';
 import './style.css';
 
 /** How long after clicking our tile a newly opened lobby counts as ours. */
@@ -33,7 +34,8 @@ export default defineContentScript({
     };
 
     const enter = async (route: Route, previous: Route | null) => {
-      if (route.name === 'play') return watchPlayTile(() => (startedAt = Date.now()));
+      const m = messages(resolveLocale((await loadSettings()).language));
+      if (route.name === 'play') return watchPlayTile(m, () => (startedAt = Date.now()));
 
       if (route.name === 'lobby') {
         if (previous?.name === 'play' && Date.now() - startedAt < START_WINDOW_MS) {
@@ -41,7 +43,7 @@ export default defineContentScript({
           await remember(challengeLobbiesItem, route.id);
         }
         const ours = route.id in (await challengeLobbiesItem.getValue());
-        return ours ? showLobbyBanner() : null;
+        return ours ? showLobbyBanner(m) : null;
       }
 
       if (route.name === 'match') {

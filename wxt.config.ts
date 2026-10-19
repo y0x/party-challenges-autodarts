@@ -6,8 +6,10 @@ export default defineConfig({
   // MV3 everywhere: the WebSocket hook needs `world: "MAIN"` content scripts (Firefox 128+).
   manifestVersion: 3,
   manifest: {
-    name: 'Party Challenges for Autodarts',
-    description: 'A challenge card party game for your Autodarts board, right inside play.autodarts.com.',
+    // Translated in public/_locales/*/messages.json.
+    name: '__MSG_extName__',
+    description: '__MSG_extDescription__',
+    default_locale: 'en',
     permissions: ['storage'],
     browser_specific_settings: {
       gecko: {
