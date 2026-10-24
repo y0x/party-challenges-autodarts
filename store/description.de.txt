@@ -2,7 +2,7 @@ Party Challenges macht dein Autodarts-Board zu einem Partyspiel mit Challenge-Ka
 
 So funktioniert's
 • In jedem Zug wählt der Spieler eine Stufe: Leicht (1 Punkt), Mittel (2 Punkte) oder Schwer (3 Punkte).
-• Er zieht eine Challenge-Karte wie „Wirf 100 oder mehr Punkte“ oder „Checke 40 aus“ und wirft seinen Zug.
+• Er zieht eine Challenge-Karte wie „Triff zweimal die 20“ oder „Checke 40 aus“ und wirft seinen Zug.
 • Wer die Karte schafft, bekommt ihre Punkte. Wer sie verfehlt, gibt sie an den nächsten Spieler weiter, bis sie jemand schafft.
 • Wer zuerst die Zielpunktzahl erreicht, gewinnt (standardmäßig 10 Punkte).
 
