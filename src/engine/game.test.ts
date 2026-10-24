@@ -44,7 +44,7 @@ const match = (snapshot: MatchSnapshot) => ({ type: 'match' as const, match: sna
 
 describe('card game on an Autodarts match', () => {
   it('awards level points on solve; the next player picks', () => {
-    let s = run(sessionWith('l2-01'), { type: 'pickLevel', level: 2 }); // Score 100+
+    let s = run(sessionWith('l2-01'), { type: 'pickLevel', level: 2 }); // Score 55+
     s = run(s, match(m.turn(0, 'T20')), match(m.turn(0, 'T20', 'D20')));
     expect(s.game.outcome).toBe('solved');
     expect(s.game.players[0]!.score).toBe(2);
@@ -55,27 +55,27 @@ describe('card game on an Autodarts match', () => {
   });
 
   it('passes a failed card to the next player', () => {
-    let s = run(sessionWith('l1-02'), { type: 'pickLevel', level: 1 }); // Any double
+    let s = run(sessionWith('l2-03'), { type: 'pickLevel', level: 2 }); // Any double
     s = run(s, match(m.turn(0, 'S1', 'S2', 'S3')));
     expect(s.game.outcome).toBe('failed');
     s = run(s, match(m.turn(1)));
     expect(s.game.phase).toBe('attempt');
     expect(s.game.active).toBe(1);
-    expect(s.game.card?.id).toBe('l1-02');
+    expect(s.game.card?.id).toBe('l2-03');
     expect(s.game.failsOnCard).toBe(1);
     s = run(s, match(m.turn(1, 'D7')), match(m.turn(2)));
-    expect(s.game.players[1]!.score).toBe(1);
+    expect(s.game.players[1]!.score).toBe(2);
     expect(s.game.phase).toBe('pickLevel');
   });
 
   it('counts missing darts as misses when the turn ends early', () => {
-    let s = run(sessionWith('l1-02'), { type: 'pickLevel', level: 1 });
+    let s = run(sessionWith('l2-03'), { type: 'pickLevel', level: 2 });
     s = run(s, match(m.turn(0, 'S1')), match(m.turn(1)));
     expect(s.game.history.at(-1)?.outcome).toBe('failed');
   });
 
   it('ignores darts thrown before the card was picked', () => {
-    let s = run(sessionWith('l1-02'), match(m.turn(0, 'D1')), { type: 'pickLevel', level: 1 });
+    let s = run(sessionWith('l2-03'), match(m.turn(0, 'D1')), { type: 'pickLevel', level: 2 });
     expect(s.game.darts).toEqual([]);
     s = run(s, match(m.turn(0, 'D1', 'S5')));
     expect(s.game.darts).toEqual([parseDart('S5')]);
@@ -83,38 +83,38 @@ describe('card game on an Autodarts match', () => {
   });
 
   it('a player who does not pick a card just loses the turn', () => {
-    const s = run(sessionWith('l1-02'), match(m.turn(0, 'S1', 'S1', 'S1')), match(m.turn(1)));
+    const s = run(sessionWith('l2-03'), match(m.turn(0, 'S1', 'S1', 'S1')), match(m.turn(1)));
     expect(s.game.phase).toBe('pickLevel');
     expect(s.game.active).toBe(1);
     expect(s.game.history).toEqual([]);
   });
 
   it('follows dart corrections made in Autodarts', () => {
-    let s = run(sessionWith('l1-02'), { type: 'pickLevel', level: 1 }, match(m.turn(0, 'D5')));
-    expect(s.game.players[0]!.score).toBe(1);
+    let s = run(sessionWith('l2-03'), { type: 'pickLevel', level: 2 }, match(m.turn(0, 'D5')));
+    expect(s.game.players[0]!.score).toBe(2);
     s = run(s, match(m.turn(0, 'S5')));
     expect(s.game.players[0]!.score).toBe(0);
     expect(s.game.phase).toBe('attempt');
   });
 
   it("rewinds when Autodarts' undo goes back to an earlier turn", () => {
-    let s = run(sessionWith('l1-02'), { type: 'pickLevel', level: 1 }, match(m.turn(0, 'D5')));
+    let s = run(sessionWith('l2-03'), { type: 'pickLevel', level: 2 }, match(m.turn(0, 'D5')));
     s = run(s, match(m.turn(1)));
-    expect(s.game.players[0]!.score).toBe(1);
+    expect(s.game.players[0]!.score).toBe(2);
     expect(s.game.phase).toBe('pickLevel');
     s = run(s, match(m.turn(0, 'D5', 'S1')));
     expect(s.game.active).toBe(0);
-    expect(s.game.card?.id).toBe('l1-02');
-    expect(s.game.players[0]!.score).toBe(1);
+    expect(s.game.card?.id).toBe('l2-03');
+    expect(s.game.players[0]!.score).toBe(2);
     s = run(s, match(m.turn(0, 'S5')));
     expect(s.game.players[0]!.score).toBe(0);
   });
 
   it('discards a card after a full round of fails when enabled', () => {
     const two = matchOf(PLAYERS.slice(0, 2));
-    let s = run(sessionWith('l1-02', { discardAfterFullRound: true }, PLAYERS.slice(0, 2)), {
+    let s = run(sessionWith('l2-03', { discardAfterFullRound: true }, PLAYERS.slice(0, 2)), {
       type: 'pickLevel',
-      level: 1,
+      level: 2,
     });
     s = run(s, match(two.turn(0, 'S1', 'S1', 'S1')), match(two.turn(1, 'S1', 'S1', 'S1')), match(two.turn(2)));
     expect(s.game.phase).toBe('pickLevel');
@@ -123,14 +123,14 @@ describe('card game on an Autodarts match', () => {
 
   it('discards a failed card when playing alone', () => {
     const solo = matchOf(PLAYERS.slice(0, 1));
-    let s = run(sessionWith('l1-02', {}, PLAYERS.slice(0, 1)), { type: 'pickLevel', level: 1 });
+    let s = run(sessionWith('l2-03', {}, PLAYERS.slice(0, 1)), { type: 'pickLevel', level: 2 });
     s = run(s, match(solo.turn(0, 'S1', 'S1', 'S1')), match(solo.turn(1)));
     expect(s.game.phase).toBe('pickLevel');
     expect(s.game.card).toBeNull();
   });
 
   it('skipping a card lets the current player pick a new one', () => {
-    let s = run(sessionWith('l1-02'), { type: 'pickLevel', level: 1 }, match(m.turn(0, 'S1')));
+    let s = run(sessionWith('l2-03'), { type: 'pickLevel', level: 2 }, match(m.turn(0, 'S1')));
     s = run(s, { type: 'skipCard' });
     expect(s.game.phase).toBe('pickLevel');
     expect(s.game.active).toBe(0);
@@ -146,14 +146,14 @@ describe('card game on an Autodarts match', () => {
   });
 
   it('ends with the Autodarts match', () => {
-    let s = run(sessionWith('l1-02', { targetScore: 0 }), { type: 'pickLevel', level: 1 }, match(m.turn(0, 'D1')));
+    let s = run(sessionWith('l2-03', { targetScore: 0 }), { type: 'pickLevel', level: 2 }, match(m.turn(0, 'D1')));
     s = run(s, match({ ...m.turn(0, 'D1'), finished: true }));
     expect(s.game.phase).toBe('finished');
     expect(s.game.winnerIds).toEqual(['a']);
   });
 
   it('starts a new card game in the next leg', () => {
-    let s = run(sessionWith('l1-02', { targetScore: 1 }), { type: 'pickLevel', level: 1 });
+    let s = run(sessionWith('l2-03', { targetScore: 1 }), { type: 'pickLevel', level: 2 });
     s = run(s, match(m.turn(0, 'D1')), match({ ...m.turn(0, 'D1'), finished: true }));
     expect(s.game.phase).toBe('finished');
     // the leg's last state may already carry the next leg number
@@ -173,7 +173,7 @@ describe('card game on an Autodarts match', () => {
   });
 
   it('restarts a finished game saved before legs were tracked', () => {
-    let s = run(sessionWith('l1-02', { targetScore: 1 }), { type: 'pickLevel', level: 1 });
+    let s = run(sessionWith('l2-03', { targetScore: 1 }), { type: 'pickLevel', level: 2 });
     s = run(s, match(m.turn(0, 'D1')), match(m.turn(1)));
     expect(s.game.phase).toBe('finished');
     s = run({ ...s, leg: undefined }, match({ ...m.turn(0), leg: '0.1' }));

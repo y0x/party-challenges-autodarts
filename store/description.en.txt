@@ -2,7 +2,7 @@ Party Challenges turns your Autodarts board into a challenge card party game, ri
 
 How it works
 • Each turn, the player picks a level: Easy (1 point), Medium (2 points) or Hard (3 points).
-• They draw a challenge card such as "Score 100 or more" or "Check out 40" and throw their turn.
+• They draw a challenge card such as "Hit the 20 twice" or "Check out 40" and throw their turn.
 • Solve the card and you get its points. Fail, and the next player tries the same card until someone solves it.
 • The first player to reach the target score wins (10 points by default).
 

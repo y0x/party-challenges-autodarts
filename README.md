@@ -4,7 +4,7 @@ A browser extension that adds a challenge card party game to [play.autodarts.com
 for friends playing in front of one board.
 
 **How to play:** on their turn, a player picks a level (Easy = 1 pt, Medium = 2 pts, Hard = 3 pts) and gets a
-challenge card such as "Score 100 or more". They then throw their turn. If they solve the card, they get the points
+challenge card such as "Hit the 20 twice". They then throw their turn. If they solve the card, they get the points
 and the next player picks a new card. If they fail, the next player tries the same card, and this continues until
 someone solves it. A card can also be skipped.
 
@@ -59,6 +59,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the commit message convention.
 - `src/engine/`: pure game logic
   - `rules.ts`: challenge rules
   - `cards.ts`: the deck, with each card's text in every language; edit it to add your own cards
+  - `solveRate.ts`: estimates each card's solve chance for a simulated player, used by `balance.test.ts`
   - `game.ts`: card game driven by match snapshots, including following Autodarts' undo
 - `src/i18n.ts`: interface texts and the language choice
 - `src/throws/`: parser for Autodarts match state
@@ -116,7 +117,9 @@ Contributions are welcome:
   Turn on *Log Autodarts match messages* in the settings and add the console output if the game doesn't follow
   the match.
 - **New cards:** add them to `src/engine/cards.ts` with a text in every language and a rule from
-  `src/engine/rules.ts`. Rules are covered by `src/engine/rules.test.ts`.
+  `src/engine/rules.ts`. Rules are covered by `src/engine/rules.test.ts`. `src/engine/balance.test.ts` checks that a
+  casual player (3-dart average about 38) solves a card in one turn with a chance that fits its level: 40–75% for
+  Easy, 18–35% for Medium and 4–18% for Hard.
 - **Translations:** add the language to `src/i18n.ts` (texts and `LOCALES`), every card in `src/engine/cards.ts`,
   `public/_locales/` and `store/`.
 - **Security issues:** report them privately as described in [SECURITY.md](SECURITY.md), not in a public issue.
