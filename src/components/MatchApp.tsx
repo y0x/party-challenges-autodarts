@@ -1,50 +1,60 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { browser } from '#imports';
+import { getCard } from '../engine/cards';
+import { dartLabel } from '../engine/darts';
 import { applyAction, createSession, type GameAction, type MatchSnapshot, type Session } from '../engine/game';
 import { messages } from '../i18n';
 import type { MatchFeed } from '../matchFeed';
+import { gameplayBarHeight } from '../pages/match';
 import { loadSettings, type Settings, saveSession, sessionsItem } from '../settings';
 import { GameView } from './GameView';
 import { useLocale } from './useLocale';
 
-const COLLAPSED_KEY = 'party-challenges-collapsed';
-
-function readCollapsed() {
-  try {
-    return localStorage.getItem(COLLAPSED_KEY) === '1';
-  } catch {
-    return false;
-  }
-}
-
-/** The card game panel on a match page. */
+/** The card game on a match page. It covers the Count Up layout below the Autodarts gameplay bar. */
 export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }) {
   const { session, match, dispatch } = useMatchSession(matchId, feed);
   const locale = useLocale();
   const m = messages(locale);
-  const [collapsed, setCollapsedState] = useState(readCollapsed);
-  const setCollapsed = (value: boolean) => {
-    setCollapsedState(value);
-    try {
-      localStorage.setItem(COLLAPSED_KEY, value ? '1' : '0');
-    } catch {
-      // ignore
-    }
-  };
+  /**
+   * Shows the Autodarts view underneath, e.g. to correct a dart, until the turn it was opened
+   * in moves on.
+   */
+  const [boardView, setBoardView] = useState<{ turnId: string | null } | null>(null);
+  const turnId = match?.turn?.id ?? null;
+  const openBoardView = () => setBoardView({ turnId });
+  useEffect(() => {
+    if (boardView && boardView.turnId !== turnId) setBoardView(null);
+  }, [boardView, turnId]);
+  const style = { ['--cc-bar-height' as string]: gameplayBarHeight() };
+  const game = session?.game;
 
-  const active = session?.game.players[session.game.active];
+  if (boardView) {
+    const card = game?.card ? getCard(game.card.id) : null;
+    return (
+      <aside className="cc-root cc-peek" style={style}>
+        <div className="cc-peek-info">
+          <p className="cc-peek-text">{card ? card.text[locale] : '🎯 Party Challenges'}</p>
+          {card && game && (
+            <p className="cc-muted cc-small">{game.darts.length > 0 ? game.darts.map(dartLabel).join(' · ') : '–'}</p>
+          )}
+        </div>
+        <button type="button" className="cc-btn cc-btn-primary" onClick={() => setBoardView(null)}>
+          {m.backToGame}
+        </button>
+      </aside>
+    );
+  }
 
   return (
-    <aside className={`cc-root cc-panel ${collapsed ? 'cc-panel-collapsed' : ''}`}>
-      <header className="cc-panel-header">
-        <button
-          type="button"
-          className="cc-panel-toggle"
-          onClick={() => setCollapsed(!collapsed)}
-          title={collapsed ? m.show : m.hide}
-        >
-          <span className="cc-panel-title">🎯 Party Challenges</span>
-          {collapsed && active && <span className="cc-muted cc-small">{active.name}</span>}
+    <section className="cc-root cc-stage" style={style}>
+      <header className="cc-stage-header">
+        <p className="cc-stage-title">🎯 Party Challenges</p>
+        {game && game.settings.targetScore > 0 && (
+          <span className="cc-pill">{m.firstTo(m.points(game.settings.targetScore))}</span>
+        )}
+        <span className="cc-spacer" />
+        <button type="button" className="cc-btn" title={m.boardViewHint} onClick={openBoardView}>
+          {m.boardView}
         </button>
         <button
           type="button"
@@ -54,32 +64,24 @@ export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }
         >
           ⚙
         </button>
-        <button
-          type="button"
-          className="cc-icon"
-          title={collapsed ? m.show : m.hide}
-          onClick={() => setCollapsed(!collapsed)}
-        >
-          {collapsed ? '▴' : '▾'}
-        </button>
       </header>
-      {!collapsed && (
-        <div className="cc-panel-body">
-          {matchId.startsWith('local-') ? (
-            <p className="cc-notice">{m.manualMatch}</p>
-          ) : session ? (
-            <GameView
-              game={session.game}
-              dispatch={dispatch}
-              turnDarts={match?.turn?.darts.length ?? 0}
-              locale={locale}
-            />
-          ) : (
-            <p className="cc-muted">{m.connecting}</p>
-          )}
-        </div>
-      )}
-    </aside>
+      <div className="cc-stage-body">
+        {matchId.startsWith('local-') ? (
+          <p className="cc-notice">{m.manualMatch}</p>
+        ) : game ? (
+          <GameView
+            game={game}
+            dispatch={dispatch}
+            turnDarts={match?.turn?.darts.length ?? 0}
+            matchFinished={match?.finished ?? false}
+            onCorrect={openBoardView}
+            locale={locale}
+          />
+        ) : (
+          <p className="cc-muted">{m.connecting}</p>
+        )}
+      </div>
+    </section>
   );
 }
 

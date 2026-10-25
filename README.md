@@ -22,8 +22,11 @@ browser and the store are translated too.
    which creates a normal Autodarts lobby. The extension remembers that lobby (`src/pages/play.ts`).
 2. **Lobby**: a banner marks it as a Party Challenges game (`src/pages/lobby.ts`). Players and the board are chosen
    as usual. The number of rounds sets how long a leg, and so a game without a target score, lasts.
-3. **Match**: a Party Challenges panel appears (`src/components/MatchApp.tsx`). Autodarts handles turns, darts,
-   corrections and undo. The card game follows the match state and Count Up's own score is ignored.
+3. **Match**: the card game covers the Count Up layout below the Autodarts top bar (`src/components/MatchApp.tsx`),
+   with its own scoreboard, the card and the darts of the turn. Autodarts handles turns, darts, corrections and undo;
+   the game's *Undo* and *Next player* buttons use Autodarts' keyboard shortcuts (`src/pages/match.ts`). Tapping a dart
+   (or *Correct darts*) shows the Autodarts board to correct it; the game comes back when the turn moves on. The card game follows the match state and Count
+   Up's own score is ignored.
 
 ## Match data
 
@@ -37,7 +40,7 @@ browser and the store are translated too.
 Matches only run on the Autodarts server, and send this data, when a board is selected in the lobby. A match without
 a board runs locally in the browser (match id `local-…`) and isn't supported.
 
-If the panel stays on "Connecting to the match…", turn on *Log Autodarts match messages* in the extension settings.
+If the game stays on "Connecting to the match…", turn on *Log Autodarts match messages* in the extension settings.
 Then check the browser console on the match page.
 
 ## Development
@@ -63,8 +66,8 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the commit message convention.
   - `game.ts`: card game driven by match snapshots, including following Autodarts' undo
 - `src/i18n.ts`: interface texts and the language choice
 - `src/throws/`: parser for Autodarts match state
-- `src/pages/`: page integrations for `/play`, the lobby and the router
-- `src/components/`: React match panel, styled with the Autodarts design tokens
+- `src/pages/`: page integrations for `/play`, the lobby, the match page and the router
+- `src/components/`: React match screen, styled with the Autodarts design tokens
   (`entrypoints/autodarts.content/style.css`)
 - `assets/`: icon sources. `icon.svg` is rendered to `public/icon/` at 48, 96 and 128 px, `icon-small.svg` at 16 and
   32 px (e.g. `rsvg-convert -w 128 -h 128 assets/icon.svg -o public/icon/128.png`)
