@@ -18,10 +18,16 @@ const en = {
   levels: { 1: 'Easy', 2: 'Medium', 3: 'Hard' },
   points: (n: number) => `${n} pt${n === 1 ? '' : 's'}`,
 
-  // Match panel
-  show: 'Show',
-  hide: 'Hide',
+  // Match page
   settings: 'Settings',
+  boardView: 'Autodarts view',
+  boardViewHint: 'Show the Autodarts board, e.g. to correct a dart',
+  backToGame: 'Back to the game',
+  correctDarts: 'Correct darts',
+  correctDartsHint: 'Open the Autodarts board to correct a wrongly detected dart',
+  undo: 'Undo',
+  next: 'Next player',
+  finishMatch: 'Finish match',
   manualMatch:
     'This match is scored manually. Party Challenges needs your Autodarts board: select it for the players in the lobby.',
   connecting: 'Connecting to the match…',
@@ -70,9 +76,15 @@ const de: Messages = {
   levels: { 1: 'Leicht', 2: 'Mittel', 3: 'Schwer' },
   points: (n: number) => `${n} ${n === 1 ? 'Punkt' : 'Punkte'}`,
 
-  show: 'Anzeigen',
-  hide: 'Ausblenden',
   settings: 'Einstellungen',
+  boardView: 'Autodarts-Ansicht',
+  boardViewHint: 'Das Autodarts-Board anzeigen, z. B. um einen Dart zu korrigieren',
+  backToGame: 'Zurück zum Spiel',
+  correctDarts: 'Darts korrigieren',
+  correctDartsHint: 'Das Autodarts-Board öffnen, um einen falsch erkannten Dart zu korrigieren',
+  undo: 'Rückgängig',
+  next: 'Nächster Spieler',
+  finishMatch: 'Spiel beenden',
   manualMatch:
     'Dieses Spiel wird manuell gezählt. Party Challenges braucht dein Autodarts-Board: Wähle es in der Lobby für die Spieler aus.',
   connecting: 'Verbinde mit dem Spiel…',
