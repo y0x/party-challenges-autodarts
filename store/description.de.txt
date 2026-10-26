@@ -1,19 +1,27 @@
 Party Challenges macht dein Autodarts-Board zu einem Partyspiel mit Challenge-Karten, direkt in play.autodarts.com.
 
-So funktioniert's
-• In jedem Zug wählt der Spieler eine Stufe: Leicht (1 Punkt), Mittel (2 Punkte) oder Schwer (3 Punkte).
-• Er zieht eine Challenge-Karte wie „Triff zweimal die 20“ oder „Checke 40 aus“ und wirft seinen Zug.
-• Wer die Karte schafft, bekommt ihre Punkte. Wer sie verfehlt, gibt sie an den nächsten Spieler weiter, bis sie jemand schafft.
+In jedem Zug wählt der Spieler eine Stufe (Leicht, Mittel oder Schwer), zieht eine Challenge-Karte wie „Triff zweimal die 20“ oder „Checke 40 aus“ und wirft seinen Zug. Dein Autodarts-Board erkennt jeden Dart, die Karten werden also automatisch geprüft, auch bei Korrekturen und Rückgängig.
+
+Zwei Spielmodi
+
+Klassisch
+• Eine geschaffte Karte bringt je nach Stufe 1, 2 oder 3 Punkte.
+• Wer sie verfehlt, gibt sie an den nächsten Spieler weiter, bis sie jemand schafft.
 • Wer zuerst die Zielpunktzahl erreicht, gewinnt (standardmäßig 10 Punkte).
 
-Dein Autodarts-Board erkennt jeden Dart, die Karten werden also automatisch geprüft, auch bei Korrekturen und Rückgängig.
+Wetten
+• Jeder startet mit 100 Münzen. Du siehst zuerst die Karte und setzt dann auf sie.
+• Eine geschaffte Karte zahlt deinen Einsatz mal ihrer Stufe, dazu den Pott aus allen verlorenen Einsätzen.
+• Extras wie Zweifler, Ansagen und goldene Karten sorgen für Wendungen. Die meisten Münzen gewinnen.
 
 Los geht's
-Öffne Spielen → Party → Party Challenges, füge die Spieler hinzu, wähle dein Board aus und starte das Spiel.
+Öffne Spielen → Party → Party Challenges, füge die Spieler hinzu, wähle dein Board und den Modus Klassisch oder Wetten und starte das Spiel.
 
 • 60 Challenge-Karten in drei Stufen
 • Deutsch und Englisch (folgt deinem Browser, in den Einstellungen änderbar)
-• Einstellbare Zielpunktzahl
+• Einstellbare Zielpunktzahl und Wettregeln
 • Sammelt keine Daten und sendet nichts
+
+Quellcode, Fehlermeldungen und Feedback: https://github.com/y0x/party-challenges-autodarts
 
 Diese Erweiterung steht in keiner Verbindung zu Autodarts.
