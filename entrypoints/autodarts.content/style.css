@@ -253,7 +253,8 @@
   margin: 0 auto;
 }
 
-@media (max-width: 800px) {
+/* Portrait screens and narrow windows: the scoreboard sits above the table. */
+@media (max-width: 800px), (orientation: portrait) {
   .cc-root .cc-game {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto 1fr;
@@ -270,17 +271,6 @@
   list-style: none;
 }
 
-@media (max-width: 800px) {
-  .cc-root .cc-scores {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-
-  .cc-root .cc-scores li {
-    flex: 1 0 140px;
-  }
-}
-
 .cc-root .cc-scores li {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -290,6 +280,28 @@
   border: 1px solid var(--cc-tile-border);
   border-radius: 12px;
   background: var(--cc-tile-bg);
+}
+
+/* Above the table, every player gets a compact tile with the name over the score. */
+@media (max-width: 800px), (orientation: portrait) {
+  .cc-root .cc-scores {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+  }
+
+  .cc-root .cc-scores li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+    padding: 10px 12px;
+  }
+
+  .cc-root .cc-scores .cc-score {
+    font-size: 30px;
+  }
+
+  .cc-root .cc-scores .cc-score-name {
+    font-size: 14px;
+  }
 }
 
 .cc-root .cc-scores li.cc-active {
@@ -341,11 +353,12 @@
   min-width: 0;
 }
 
+/* Top-aligned, so the card doesn't move when notices or results appear below it. */
 .cc-root .cc-play {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 16px;
   width: 100%;
   max-width: 720px;
@@ -359,6 +372,23 @@
   gap: 8px;
   padding-top: 12px;
   border-top: 1px solid var(--cc-tile-border);
+}
+
+/* Stacked layout: the controls share one row, so the primary button stays in the same place. */
+@media (max-width: 800px), (orientation: portrait) {
+  .cc-root .cc-controls {
+    flex-wrap: nowrap;
+  }
+
+  .cc-root .cc-controls .cc-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    height: auto;
+    min-height: 44px;
+    padding: 6px 10px;
+    line-height: 1.2;
+    white-space: normal;
+  }
 }
 
 /* Level picker: three cards to draw from */
@@ -545,4 +575,303 @@
   font-family: var(--font-number, sans-serif);
   font-size: 20px;
   font-weight: 700;
+}
+
+/* Lobby: game mode picker */
+.cc-banner .cc-modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.cc-banner .cc-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px;
+  border: 1px solid var(--cc-tile-border);
+  border-radius: 8px;
+  background: var(--cc-control-bg);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.cc-banner .cc-mode[aria-pressed="true"] {
+  border-color: var(--cc-party);
+  background: color-mix(in oklab, var(--cc-party) 14%, var(--cc-control-bg));
+}
+
+.cc-banner .cc-mode-name {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.cc-banner .cc-mode-hint {
+  font-size: 13px;
+  line-height: 1.3;
+  color: var(--cc-muted);
+}
+
+/* Betting mode */
+.cc-root .cc-center {
+  text-align: center;
+}
+
+.cc-root .cc-status {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cc-root .cc-pot {
+  align-self: center;
+  height: 30px;
+  font-size: 15px;
+  color: var(--cc-party);
+  background: color-mix(in oklab, var(--cc-party) 14%, transparent);
+}
+
+.cc-root .cc-pill-hot {
+  align-self: center;
+  height: auto;
+  min-height: 30px;
+  padding: 6px 12px;
+  white-space: normal;
+  color: var(--cc-bad);
+  background: color-mix(in oklab, var(--cc-bad) 18%, transparent);
+}
+
+.cc-root .cc-pill-golden {
+  color: #f5c542;
+  background: color-mix(in oklab, #f5c542 20%, transparent);
+}
+
+.cc-root .cc-card-golden {
+  border-color: #f5c542;
+  box-shadow: 0 0 24px color-mix(in oklab, #f5c542 30%, transparent);
+}
+
+.cc-root .cc-score-extra {
+  grid-column: 1 / -1;
+}
+
+.cc-root .cc-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.cc-root .cc-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.cc-root .cc-chip {
+  min-height: 36px;
+  padding: 6px 14px;
+  border: 1px solid var(--cc-tile-border);
+  border-radius: 999px;
+  background: var(--cc-control-bg);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.cc-root .cc-chip:hover:not(:disabled) {
+  background-image: linear-gradient(rgb(255 255 255 / 0.06), rgb(255 255 255 / 0.06));
+}
+
+.cc-root .cc-chip[aria-pressed="true"] {
+  border-color: var(--cc-party);
+  color: var(--cc-party);
+  background: color-mix(in oklab, var(--cc-party) 14%, var(--cc-control-bg));
+}
+
+.cc-root .cc-chip:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.cc-root .cc-result .cc-chip {
+  margin-top: 6px;
+  color: var(--foreground, #fafafa);
+  white-space: normal;
+}
+
+.cc-root .cc-bets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 12px;
+}
+
+.cc-root .cc-bet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 16px 8px;
+  border: 1px solid var(--cc-tile-border);
+  border-radius: 14px;
+  background: var(--cc-control-bg);
+  color: var(--cc-muted);
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+
+.cc-root .cc-bet:hover {
+  transform: translateY(-3px);
+  border-color: var(--cc-party);
+}
+
+.cc-root .cc-bet-amount {
+  font-family: var(--font-number, sans-serif);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--cc-party);
+}
+
+.cc-root .cc-stake {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px 8px;
+  font-weight: 700;
+}
+
+/* Phones in portrait */
+@media (max-width: 480px) {
+  .cc-root .cc-stage-body {
+    padding: 12px 12px max(12px, env(safe-area-inset-bottom));
+  }
+
+  .cc-root .cc-play {
+    gap: 12px;
+  }
+
+  .cc-root .cc-h1 {
+    font-size: 28px;
+  }
+
+  .cc-root .cc-card {
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .cc-root .cc-card-text {
+    font-size: clamp(28px, 9vw, 40px);
+  }
+
+  .cc-root .cc-levels,
+  .cc-root .cc-darts,
+  .cc-root .cc-bets {
+    gap: 8px;
+  }
+
+  .cc-root .cc-level {
+    padding: 16px 6px;
+  }
+
+  .cc-root .cc-level-points {
+    font-size: 36px;
+  }
+
+  .cc-root .cc-bet {
+    padding: 12px 6px;
+  }
+
+  .cc-root .cc-bet-amount {
+    font-size: 28px;
+  }
+
+  .cc-root .cc-dart {
+    padding: 10px 0;
+    font-size: 24px;
+  }
+}
+
+/* Low landscape screens (phones, small tablets): everything a bit smaller, so the card fits. */
+@media (orientation: landscape) and (max-height: 560px) {
+  .cc-root .cc-stage-header {
+    padding: 4px 12px;
+  }
+
+  .cc-root .cc-stage-title {
+    font-size: 20px;
+  }
+
+  .cc-root .cc-stage-body {
+    padding: 10px 12px max(10px, env(safe-area-inset-bottom));
+  }
+
+  .cc-root .cc-game {
+    grid-template-columns: minmax(150px, 220px) minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .cc-root .cc-scores {
+    gap: 6px;
+  }
+
+  .cc-root .cc-scores li {
+    gap: 4px 8px;
+    padding: 8px 12px;
+  }
+
+  .cc-root .cc-score {
+    font-size: 26px;
+  }
+
+  .cc-root .cc-table,
+  .cc-root .cc-play {
+    gap: 10px;
+  }
+
+  .cc-root .cc-h1 {
+    font-size: 26px;
+  }
+
+  .cc-root .cc-card {
+    gap: 8px;
+    padding: 12px 16px;
+  }
+
+  .cc-root .cc-card-text {
+    font-size: clamp(26px, 4vw, 36px);
+  }
+
+  .cc-root .cc-level {
+    gap: 4px;
+    padding: 12px 8px;
+  }
+
+  .cc-root .cc-level-points {
+    font-size: 32px;
+  }
+
+  .cc-root .cc-bet {
+    padding: 10px 6px;
+  }
+
+  .cc-root .cc-bet-amount {
+    font-size: 26px;
+  }
+
+  .cc-root .cc-dart {
+    padding: 8px 0;
+    font-size: 22px;
+  }
+
+  .cc-root .cc-controls {
+    padding-top: 8px;
+  }
 }

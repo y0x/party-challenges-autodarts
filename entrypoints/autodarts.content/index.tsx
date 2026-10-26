@@ -5,7 +5,15 @@ import { MatchFeed } from '@/src/matchFeed';
 import { showLobbyBanner } from '@/src/pages/lobby';
 import { watchPlayTile } from '@/src/pages/play';
 import { type Route, watchRoute } from '@/src/pages/router';
-import { challengeLobbiesItem, challengeMatchesItem, loadSettings, remember, settingsItem } from '@/src/settings';
+import {
+  challengeLobbiesItem,
+  challengeMatchesItem,
+  getGameMode,
+  loadSettings,
+  remember,
+  setGameMode,
+  settingsItem,
+} from '@/src/settings';
 import './style.css';
 
 /** How long after clicking our tile a newly opened lobby counts as ours. */
@@ -43,12 +51,15 @@ export default defineContentScript({
           await remember(challengeLobbiesItem, route.id);
         }
         const ours = route.id in (await challengeLobbiesItem.getValue());
-        return ours ? showLobbyBanner(m) : null;
+        if (!ours) return null;
+        const mode = await getGameMode(route.id);
+        return showLobbyBanner(m, mode, (next) => void setGameMode(route.id, next));
       }
 
       if (route.name === 'match') {
         if (previous?.name === 'lobby' && previous.id in (await challengeLobbiesItem.getValue())) {
           await remember(challengeMatchesItem, route.id);
+          await setGameMode(route.id, await getGameMode(previous.id));
         }
         const ours = route.id in (await challengeMatchesItem.getValue());
         return ours ? mountMatch(route.id) : null;

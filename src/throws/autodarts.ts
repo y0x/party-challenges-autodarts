@@ -47,7 +47,10 @@ interface RawMatch {
   set?: unknown;
   players?: { id?: unknown; name?: unknown }[];
   turns?: { round?: unknown; playerId?: unknown; throws?: unknown[] }[];
+  settings?: { maxRounds?: unknown };
 }
+
+const positive = (value: unknown) => (typeof value === 'number' && value > 0 ? value : undefined);
 
 /**
  * Reads an Autodarts match state, as sent on the `autodarts.matches` channel and returned by
@@ -74,7 +77,15 @@ export function parseMatchState(data: unknown): MatchSnapshot | null {
         darts: (raw.throws ?? []).map(normalizeThrow).filter((d): d is Dart => d !== null),
       }
     : null;
-  return { id: match.id, leg, finished: match.finished === true || match.gameFinished === true, players, turn };
+  return {
+    id: match.id,
+    leg,
+    finished: match.finished === true || match.gameFinished === true,
+    players,
+    turn,
+    round: positive(round),
+    maxRounds: positive(match.settings?.maxRounds),
+  };
 }
 
 /** Parses a hook message; returns the match state it carries, if any. */

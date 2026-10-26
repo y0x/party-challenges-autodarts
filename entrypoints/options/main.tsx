@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom/client';
+import type { BettingRules } from '@/src/engine/betting';
 import { type Language, LOCALE_NAMES, LOCALES, messages, resolveLocale } from '@/src/i18n';
 import { DEFAULT_SETTINGS, loadSettings, type Settings, settingsItem } from '@/src/settings';
 import './style.css';
@@ -18,6 +19,10 @@ function Options() {
     document.documentElement.lang = locale;
     document.title = m.optionsTitle;
   }, [locale, m]);
+
+  const setBetting = (rules: Partial<BettingRules>) =>
+    setSettings({ ...settings, betting: { ...settings.betting, ...rules } });
+  const toggles = Object.keys(m.bettingRuleNames) as (keyof typeof m.bettingRuleNames)[];
 
   const save = async () => {
     await settingsItem.setValue(settings);
@@ -63,6 +68,38 @@ function Options() {
         />
         <span>{m.discardAfterFullRound}</span>
       </label>
+
+      <h2>{m.bettingRules}</h2>
+      <p className="hint">{m.bettingRulesHint}</p>
+      <label>
+        <span>{m.startingCoins}</span>
+        <input
+          type="number"
+          min={10}
+          value={settings.betting.startingCoins}
+          onChange={(e) => setBetting({ startingCoins: Math.max(10, Number(e.target.value) || 0) })}
+        />
+      </label>
+      <label>
+        <span>{m.targetCoins}</span>
+        <input
+          type="number"
+          min={0}
+          value={settings.betting.targetCoins}
+          onChange={(e) => setBetting({ targetCoins: Math.max(0, Number(e.target.value) || 0) })}
+        />
+      </label>
+      <p className="hint">{m.targetScoreHint}</p>
+      {toggles.map((rule) => (
+        <label key={rule}>
+          <input
+            type="checkbox"
+            checked={settings.betting[rule]}
+            onChange={(e) => setBetting({ [rule]: e.target.checked })}
+          />
+          <span>{m.bettingRuleNames[rule]}</span>
+        </label>
+      ))}
 
       <h2>{m.troubleshooting}</h2>
       <label>

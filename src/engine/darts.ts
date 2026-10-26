@@ -34,3 +34,13 @@ export function parseDart(label: string): Dart {
   }
   throw new Error(`Invalid dart: ${label}`);
 }
+
+/** Every distinct dart: a miss, singles, doubles and trebles of 1–20, 25 and the bull. */
+export const ALL_DARTS: Dart[] = [
+  MISS,
+  ...([1, 2, 3] as const).flatMap((multiplier) =>
+    Array.from({ length: 20 }, (_, i): Dart => ({ number: i + 1, multiplier })),
+  ),
+  { number: 25, multiplier: 1 },
+  { number: 25, multiplier: 2 },
+];
