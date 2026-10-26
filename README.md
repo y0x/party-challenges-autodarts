@@ -12,6 +12,30 @@ The first player to reach the target score (10 points by default) wins. Without 
 the Autodarts leg. The winner screen shows how many cards of each level every player solved, and the next leg starts
 a new game.
 
+### Betting mode
+
+The game mode is chosen in the lobby banner: **Classic** (above) or **Betting**. In betting mode every player starts
+with 100 coins. The player picks a level, sees the card and then bets on it with one tap (at least the minimum bet,
+at most half their coins). A solved card pays the bet times the level (×1, ×2, ×3) plus the **pot**. A failed card's
+bet goes into the pot, and the card goes to the next player, who bets on it in turn. Most coins after the leg wins,
+or the first player to the target coins.
+
+- **Doubters:** before the first dart, the other players can bet that the thrower fails, as much as the thrower bet.
+  They win that much if the thrower fails, and pay it to the thrower otherwise.
+- **Call your shot:** "in 2 darts" or "no misses" each add 1 to the multiplier. A call can't be made when the card
+  can't be solved that way.
+- **Gifts:** before the player picks a level, another player can pay twice the minimum bet to force a Hard card on
+  them. If they fail it, the gifter gets their bet.
+- **Double or nothing:** after a solve, the player can let the card's payout ride on their next card of that level.
+- **Bounty on the leader:** when the player in the lead fails, their bet is split among the others.
+- **Golden cards** pay double. In the **final round** of the Autodarts match, payouts are doubled and players can go
+  all-in.
+- **Loan shark:** borrow 50 coins and pay back 75 when the game ends (up to two loans).
+- **No stalling:** the minimum bet (10) rises by 5 every 10 rounds. Skipping a card, or ending the turn without
+  betting, costs the bet (or the minimum bet) into the pot. A broke player gets the minimum bet from the bank.
+
+The starting coins, the target coins and each of these rules can be changed in the extension settings.
+
 The cards and the interface are available in English and German. The language follows the browser (English for
 any other language) and can be changed in the extension settings. The extension's name and description in the
 browser and the store are translated too.
@@ -64,6 +88,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the commit message convention.
   - `cards.ts`: the deck, with each card's text in every language; edit it to add your own cards
   - `solveRate.ts`: estimates each card's solve chance for a simulated player, used by `balance.test.ts`
   - `game.ts`: card game driven by match snapshots, including following Autodarts' undo
+  - `betting.ts`: the rules of betting mode (bets, payouts, pot, doubters, calls, gifts, loans)
 - `src/i18n.ts`: interface texts and the language choice
 - `src/throws/`: parser for Autodarts match state
 - `src/pages/`: page integrations for `/play`, the lobby, the match page and the router

@@ -1,12 +1,22 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { browser } from '#imports';
+import { isBetting } from '../engine/betting';
 import { getCard } from '../engine/cards';
 import { dartLabel } from '../engine/darts';
-import { applyAction, createSession, type GameAction, type MatchSnapshot, type Session } from '../engine/game';
+import {
+  applyAction,
+  createSession,
+  type GameAction,
+  type GameSettings,
+  type MatchSnapshot,
+  type Session,
+  targetOf,
+  upgradeSession,
+} from '../engine/game';
 import { messages } from '../i18n';
 import type { MatchFeed } from '../matchFeed';
 import { gameplayBarHeight } from '../pages/match';
-import { loadSettings, type Settings, saveSession, sessionsItem } from '../settings';
+import { getGameMode, loadSettings, saveSession, sessionsItem } from '../settings';
 import { GameView } from './GameView';
 import { useLocale } from './useLocale';
 
@@ -49,8 +59,10 @@ export function MatchApp({ matchId, feed }: { matchId: string; feed: MatchFeed }
     <section className="cc-root cc-stage" style={style}>
       <header className="cc-stage-header">
         <p className="cc-stage-title">🎯 Party Challenges</p>
-        {game && game.settings.targetScore > 0 && (
-          <span className="cc-pill">{m.firstTo(m.points(game.settings.targetScore))}</span>
+        {game && targetOf(game) > 0 && (
+          <span className="cc-pill">
+            {m.firstTo(isBetting(game) ? m.coins(targetOf(game)) : m.points(targetOf(game)))}
+          </span>
         )}
         <span className="cc-spacer" />
         <button type="button" className="cc-btn" title={m.boardViewHint} onClick={openBoardView}>
@@ -90,7 +102,7 @@ function useMatchSession(matchId: string, feed: MatchFeed) {
   const [match, setMatch] = useState<MatchSnapshot | undefined>(() => feed.get(matchId));
   const ref = useRef<Session | null>(null);
   /** Rules for a new game; null until storage is loaded. */
-  const settings = useRef<Settings | null>(null);
+  const settings = useRef<GameSettings | null>(null);
 
   const commit = useCallback((next: Session) => {
     if (next === ref.current) return;
@@ -112,13 +124,16 @@ function useMatchSession(matchId: string, feed: MatchFeed) {
 
   useEffect(() => {
     const unsubscribe = feed.subscribe(onMatch);
-    void Promise.all([sessionsItem.getValue(), loadSettings()]).then(([sessions, rules]) => {
-      ref.current = sessions[matchId] ?? null;
-      setSession(ref.current);
-      settings.current = rules;
-      const latest = feed.get(matchId);
-      if (latest) onMatch(latest);
-    });
+    void Promise.all([sessionsItem.getValue(), loadSettings(), getGameMode(matchId)]).then(
+      ([sessions, rules, mode]) => {
+        const saved = sessions[matchId];
+        ref.current = saved ? upgradeSession(saved) : null;
+        setSession(ref.current);
+        settings.current = { ...rules, mode };
+        const latest = feed.get(matchId);
+        if (latest) onMatch(latest);
+      },
+    );
     return unsubscribe;
   }, [matchId, feed, onMatch]);
 

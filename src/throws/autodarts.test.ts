@@ -31,6 +31,7 @@ describe('match state', () => {
     finished: false,
     player: 1,
     round: 2,
+    settings: { maxRounds: 50 },
     players: [
       { id: 'p1', name: 'Ann', boardId: 'b1' },
       { id: 'p2', name: 'Ben', boardId: 'b1' },
@@ -58,6 +59,8 @@ describe('match state', () => {
         { id: 'p2', name: 'Ben' },
       ],
       turn: { id: '0.0.2.1', playerId: 'p2', darts: [parseDart('T20'), parseDart('S5')] },
+      round: 2,
+      maxRounds: 50,
     });
   });
 
