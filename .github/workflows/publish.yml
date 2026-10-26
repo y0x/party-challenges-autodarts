@@ -28,7 +28,7 @@ jobs:
       - name: Check configuration
         if: vars.CHROME_EXTENSION_ID == ''
         run: |
-          echo "::error::Set up the Chrome Web Store first (README → One-time store setup)."
+          echo "::error::Set up the Chrome Web Store first (docs/releasing.md → One-time store setup)."
           exit 1
 
       - name: Checkout
