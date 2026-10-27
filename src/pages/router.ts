@@ -41,17 +41,20 @@ export function watchRoute(onChange: (route: Route, previous: Route | null) => v
 
 /** Runs `update` (throttled to animation frames) whenever the page's DOM changes. */
 export function watchDom(update: () => void): () => void {
-  let scheduled = false;
+  let frame = 0;
   const schedule = () => {
-    if (scheduled) return;
-    scheduled = true;
-    requestAnimationFrame(() => {
-      scheduled = false;
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
       update();
     });
   };
   const observer = new MutationObserver(schedule);
   observer.observe(document.body, { childList: true, subtree: true });
   schedule();
-  return () => observer.disconnect();
+  return () => {
+    observer.disconnect();
+    // An update still pending would add our elements back to the page being left.
+    cancelAnimationFrame(frame);
+  };
 }
