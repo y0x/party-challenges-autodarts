@@ -110,6 +110,17 @@ describe('card game on an Autodarts match', () => {
     expect(s.game.players[0]!.score).toBe(0);
   });
 
+  it('plays on from a turn corrected after an undo', () => {
+    let s = run(sessionWith('l2-03'), { type: 'pickLevel', level: 2 }, match(m.turn(0, 'S1', 'S1', 'S1')));
+    s = run(s, match(m.turn(1)));
+    expect(s.game.failsOnCard).toBe(1);
+    // Undo back to the first turn, correct a dart so the card is solved, and go on.
+    s = run(s, match(m.turn(0, 'S1', 'S1', 'D1')), match(m.turn(1)));
+    expect(s.game.players[0]!.score).toBe(2);
+    expect(s.game.phase).toBe('pickLevel');
+    expect(s.game.card).toBeNull();
+  });
+
   it('discards a card after a full round of fails when enabled', () => {
     const two = matchOf(PLAYERS.slice(0, 2));
     let s = run(sessionWith('l2-03', { discardAfterFullRound: true }, PLAYERS.slice(0, 2)), {
