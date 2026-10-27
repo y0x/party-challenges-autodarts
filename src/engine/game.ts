@@ -523,10 +523,15 @@ export function applyAction(session: Session, action: GameAction): Session {
   let turnEnds = session.turnEnds;
   const turnId = action.type === 'match' ? action.match.turn?.id : undefined;
   if (turnId && base.turnId && turnId !== base.turnId) {
-    const entries = Object.entries({ ...turnEnds, [base.turnId]: base });
+    let entries = Object.entries({ ...turnEnds, [base.turnId]: base });
+    const rewind = entries.findIndex(([id]) => id === turnId);
+    if (rewind >= 0) {
+      // Autodarts went back to an earlier turn (undo): continue from where that turn was.
+      base = entries[rewind]![1];
+      // The turns after it are played again, so their saved states no longer apply.
+      entries = entries.slice(0, rewind);
+    }
     turnEnds = Object.fromEntries(entries.slice(-MAX_TURN_ENDS));
-    // Autodarts went back to an earlier turn (undo): continue from where that turn was.
-    if (session.turnEnds[turnId]) base = session.turnEnds[turnId]!;
   }
   const game = gameReducer(base, action);
   if (game === session.game && turnEnds === session.turnEnds) return session;
