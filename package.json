@@ -37,7 +37,7 @@
     "react-dom": "^19.3.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.15",
+    "@biomejs/biome": "^2.6.4",
     "@commitlint/cli": "^21.2.4",
     "@commitlint/config-conventional": "^21.2.4",
     "@semantic-release/exec": "^7.1.0",
@@ -51,6 +51,6 @@
     "typescript": "^7.0.2",
     "vitest": "^5.0.5",
     "web-ext": "^10.8.0",
-    "wxt": "^0.21.4"
+    "wxt": "^0.21.5"
   }
 }
